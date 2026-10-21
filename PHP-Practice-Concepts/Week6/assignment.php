@@ -11,7 +11,6 @@ session_start();
 $errors = [];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // 1. Personal Information Validation
     $name = trim($_POST['name'] ?? '');
     $pob = trim($_POST['pob'] ?? '');
     $dob = $_POST['dob'] ?? '';
@@ -20,7 +19,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $telephone = trim($_POST['telephone'] ?? '');
     $email = trim($_POST['email'] ?? '');
 
-    // Name validation: not empty and only letters and spaces[span_2](start_span)[span_2](end_span)
     if (empty($name)) {
         $errors['name'] = "Magaca waa khasab in la buuxiyo.";
     } elseif (!preg_match("/^[a-zA-Z ]*$/", $name)) {
@@ -40,7 +38,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors['email'] = "Fadlan geli email sax ah.";
     }
 
-    // 2. Parent Information Validation[span_4](start_span)[span_4](end_span)
     $parent_name = trim($_POST['parent_name'] ?? '');
     $parent_tel = trim($_POST['parent_tel'] ?? '');
     $relationship = trim($_POST['relationship'] ?? '');
@@ -49,7 +46,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($parent_tel)) $errors['parent_tel'] = "Telifoonka waalidka waa khasab.";
     if (empty($relationship)) $errors['relationship'] = "Xiriirka waalidka waa khasab.";
 
-    // 3. Academic Information Validation[span_5](start_span)[span_5](end_span)
     $student_id = trim($_POST['student_id'] ?? '');
     $faculty = trim($_POST['faculty'] ?? '');
     $department = trim($_POST['department'] ?? '');
@@ -62,7 +58,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($class)) $errors['class'] = "Fasalku waa khasab.";
     if (empty($reg_date)) $errors['reg_date'] = "Taariikhda diiwaangelinta waa khasab.";
 
-    // 4. Image Upload Validation[span_6](start_span)[span_6](end_span)
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
         $allowed_types = ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'];
         $file_type = $_FILES['image']['type'];
@@ -73,6 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $upload_dir = "uploads/";
             if (!is_dir($upload_dir)) {
                 mkdir($upload_dir, 0777, true);
+                
             }
             $image_name = time() . "_" . basename($_FILES['image']['name']);
             $target_file = $upload_dir . $image_name;
@@ -82,7 +78,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors['image'] = "Sawirka ardayga waa khasab in la soo geliyo.";
     }
 
-    // Haddii aysan jirin wax qalad ah (Errors), keydi xogta oo u gudub bogga xiga[span_7](start_span)[span_7](end_span)
     if (empty($errors)) {
         $_SESSION['student'] = [
             'name' => $name,
@@ -122,65 +117,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="card-header bg-primary text-white text-center">
             <h3>Foomka Diiwaangelinta Ardayda</h3>
         </div>
-        <div class="card-body">
-            <form action="" method="POST" enctype="multipart/form-data">
-                
-                <!-- Qeybta 1: Macluumaadka Shakhsiga ah -->
-                <h4 class="text-secondary border-bottom pb-2 mb-3">1. Macluumaadka Shakhsiga ah</h4>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Magaca Buuxa:</label>
-                        <input type="text" name="name" class="form-control <?php echo isset($errors['name']) ? 'is-invalid' : ''; ?>" value="<?php echo $_POST['name'] ?? ''; ?>">
-                        <div class="invalid-feedback"><?php echo $errors['name'] ?? ''; ?></div>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Goobta Dhalashada (POB):</label>
-                        <input type="text" name="pob" class="form-control <?php echo isset($errors['pob']) ? 'is-invalid' : ''; ?>" value="<?php echo $_POST['pob'] ?? ''; ?>">
-                        <div class="invalid-feedback"><?php echo $errors['pob'] ?? ''; ?></div>
-                    </div>
-                </div>
+        
 
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label class="form-label">Taariikhda Dhalashada (DOB):</label>
-                        <input type="date" name="dob" class="form-control <?php echo isset($errors['dob']) ? 'is-invalid' : ''; ?>" value="<?php echo $_POST['dob'] ?? ''; ?>">
-                        <div class="invalid-feedback"><?php echo $errors['dob'] ?? ''; ?></div>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Jinsiga:</label>
-                        <select name="gender" class="form-select <?php echo isset($errors['gender']) ? 'is-invalid' : ''; ?>">
-                            <option value="">Dooro Jinsiga</option>
-                            <option value="Lab" <?php echo (($_POST['gender'] ?? '') == 'Lab') ? 'selected' : ''; ?>>Lab</option>
-                            <option value="Dheddig" <?php echo (($_POST['gender'] ?? '') == 'Dheddig') ? 'selected' : ''; ?>>Dheddig</option>
-                        </select>
-                        <div class="invalid-feedback"><?php echo $errors['gender'] ?? ''; ?></div>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Cinwaanka (Address):</label>
-                        <input type="text" name="address" class="form-control <?php echo isset($errors['address']) ? 'is-invalid' : ''; ?>" value="<?php echo $_POST['address'] ?? ''; ?>">
-                        <div class="invalid-feedback"><?php echo $errors['address'] ?? ''; ?></div>
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label class="form-label">Telifoonka:</label>
-                        <input type="text" name="telephone" class="form-control <?php echo isset($errors['telephone']) ? 'is-invalid' : ''; ?>" value="<?php echo $_POST['telephone'] ?? ''; ?>">
-                        <div class="invalid-feedback"><?php echo $errors['telephone'] ?? ''; ?></div>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Email-ka:</label>
-                        <input type="email" name="email" class="form-control <?php echo isset($errors['email']) ? 'is-invalid' : ''; ?>" value="<?php echo $_POST['email'] ?? ''; ?>">
-                        <div class="invalid-feedback"><?php echo $errors['email'] ?? ''; ?></div>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Sawirka Ardayga:</label>
-                        <input type="file" name="image" class="form-control <?php echo isset($errors['image']) ? 'is-invalid' : ''; ?>">
-                        <div class="invalid-feedback"><?php echo $errors['image'] ?? ''; ?></div>
-                    </div>
-                </div>
-
-                <!-- Qeybta 2: Macluumaadka Waalidka -->
                 <h4 class="text-secondary border-bottom pb-2 my-4">2. Macluumaadka Waalidka</h4>
                 <div class="row mb-3">
                     <div class="col-md-4">

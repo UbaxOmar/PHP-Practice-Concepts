@@ -8,7 +8,6 @@
 <body>
     <?php
 session_start();
-// Haddii aysan xog jirin, dib ugu celi foomka
 if (!isset($_SESSION['student'])) {
     header("Location: index.php");
     exit();
@@ -32,14 +31,13 @@ $data = $_SESSION['student'];
         </div>
         <div class="card-body">
             
-            <!-- Sawirka Ardayga -->
+            
             <?php if (!empty($data['image'])): ?>
                 <div class="text-center mb-4">
                     <img src="<?php echo $data['image']; ?>" alt="Sawirka Ardayga" class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
                 </div>
             <?php endif; ?>
 
-            <!-- Miiska Xogta[span_8](start_span)[span_8](end_span) -->
             <table class="table table-bordered table-striped">
                 <thead class="table-dark">
                     <tr>
